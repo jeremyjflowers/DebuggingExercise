@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace HelloWorld
@@ -9,7 +10,7 @@ namespace HelloWorld
         bool _gameOver = false;
         string _playerName = "Hero";
         int _playerHealth = 120;
-        int _playerDamage = 200000;
+        int _playerDamage = 20;
         int _playerDefense = 10;
         int levelScaleMax = 5;
         //Run the game
@@ -78,7 +79,7 @@ namespace HelloWorld
                 //If input is 1, the player wants to attack. By default the enemy blocks any incoming attack
                 if(input == '1')
                 {
-                    BlockAttack(ref enemyHealth,_playerDamage,enemyDefense);
+                    BlockAttack(ref enemyHealth, _playerDamage, enemyDefense);
                     Console.Clear();
                     Console.WriteLine("You dealt " + (_playerDamage - enemyDefense) + " damage.");
                     Console.Write("> ");
@@ -111,7 +112,7 @@ namespace HelloWorld
 
         }
         //Decrements the health of a character. The attack value is subtracted by that character's defense
-        void BlockAttack(ref int opponentHealth,int attackVal,int opponentDefense)
+        void BlockAttack(ref int opponentHealth, int attackVal, int opponentDefense)
         {
             int damage = attackVal - opponentDefense;
             if(damage < 0)
@@ -135,6 +136,56 @@ namespace HelloWorld
             _playerDamage *= scale;
             _playerDefense *= scale;
         }
+
+        //Allows the player to manually improve stats
+        void UpgradeStats(ref int _playerHealth, ref int _playerDamage, ref int _playerDefense)
+        {
+            char input = ' ';
+            while (input != '1' && input != '2' && input != '3')
+            {
+                Console.WriteLine("Welcome to the shop, traveler! What would you like?");
+                Console.WriteLine("1. Increase Health");
+                Console.WriteLine("2. Increase Damage");
+                Console.WriteLine("3. Increase Defense");
+                Console.Write("> ");
+                input = Console.ReadKey().KeyChar;
+                switch (input)
+                {
+                    case '1':
+                        {
+                            _playerHealth += 35;
+                            Console.WriteLine("\nYou increased your health by 35 points.");
+                            Console.ReadKey();
+                            Console.Clear();
+                            break;
+                        }
+                    case '2':
+                        {
+                            _playerDamage += 16;
+                            Console.WriteLine("\nYou increased your damage by 16 points.");
+                            Console.ReadKey();
+                            Console.Clear();
+                            break;
+                        }
+                    case '3':
+                        {
+                            _playerDefense += 20;
+                            Console.WriteLine("\nYou increased your defense by 20 points");
+                            Console.ReadKey();
+                            Console.Clear();
+                            break;
+                        }
+                    default:
+                        {
+                            Console.WriteLine("\nI'm sorry, I don't understand your choice. Please try again.");
+                            Console.ReadKey();
+                            Console.Clear();
+                            break;
+                        }
+                }
+            }
+        }
+
         //Gets input from the player
         //Out's the char variable given. This variables stores the player's input choice.
         //The parameters option1 and option 2 displays the players current chpices to the screen
@@ -153,7 +204,7 @@ namespace HelloWorld
             }
                 
         }
-
+       
         void GetInput(out char input, string option1, string option2)
         {
             //Initialize input
@@ -237,7 +288,7 @@ namespace HelloWorld
                             _playerName = "Sir Kibble";
                             _playerHealth = 120;
                             _playerDefense = 10;
-                            _playerDamage = 2000000;
+                            _playerDamage = 20;
                             break;
                         }
                     case '2':
@@ -278,6 +329,7 @@ namespace HelloWorld
         public void Start()
         {
             SelectCharacter();
+            UpgradeStats(ref _playerHealth, ref _playerDamage, ref _playerDefense);
         }
 
         //Repeated until the game ends
