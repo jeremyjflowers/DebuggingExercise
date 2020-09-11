@@ -5,14 +5,31 @@ using System.Text;
 
 namespace HelloWorld
 {
+
+    struct Player
+    {
+        public string name;
+        public int health;
+        public int damage;
+        public int defense;
+
+    }
+
+    struct Item
+    {
+        public string name;
+        public int statBoost;
+        public int durability;
+    }
+
     class Game
     {
         bool _gameOver = false;
-        string _playerName = "Hero";
-        int _playerHealth = 120;
-        int _playerDamage = 20;
-        int _playerDefense = 10;
-        int levelScaleMax = 5;
+        Player player1;
+        Player player2;
+        public int levelScaleMax = 0;
+        Item greatSword;
+        Item shortSword;
         //Run the game
         public void Run()
         {
@@ -67,10 +84,10 @@ namespace HelloWorld
             }
 
             //Loops until the player or the enemy is dead
-            while(_playerHealth > 0 && enemyHealth > 0)
+            while(player1.health > 0 && enemyHealth > 0)
             {
                 //Displays the stats for both charactersa to the screen before the player takes their turn
-                PrintStats(_playerName, _playerHealth, _playerDamage, _playerDefense);
+                PrintStats(player1.name, player1.health, player1.damage, player1.defense);
                 PrintStats(enemyName, enemyHealth, enemyAttack, enemyDefense);
 
                 //Get input from the player
@@ -79,15 +96,15 @@ namespace HelloWorld
                 //If input is 1, the player wants to attack. By default the enemy blocks any incoming attack
                 if(input == '1')
                 {
-                    BlockAttack(ref enemyHealth, _playerDamage, enemyDefense);
+                    BlockAttack(ref enemyHealth, player1.damage, enemyDefense);
                     Console.Clear();
-                    Console.WriteLine("You dealt " + (_playerDamage - enemyDefense) + " damage.");
+                    Console.WriteLine("You dealt " + (player1.damage - enemyDefense) + " damage.");
                     Console.Write("> ");
                     Console.ReadKey();
                     Console.Clear();
 
                     //After the player attacks, the enemy takes its turn. Since the player decided not to defend, the block attack function is not called.
-                    _playerHealth -= enemyAttack;
+                    player1.health -= enemyAttack;
                     Console.WriteLine(enemyName + " dealt " + enemyAttack + " damage.");
                     Console.Write("> ");
                     Console.ReadKey();
@@ -97,8 +114,8 @@ namespace HelloWorld
                 //called instead of simply decrementing the health by the enemy's attack value.
                 else
                 {
-                    BlockAttack(ref _playerHealth, enemyAttack, _playerDefense);
-                    Console.WriteLine(enemyName + " dealt " + (enemyAttack - _playerDefense) + " damage.");
+                    BlockAttack(ref player1.health, enemyAttack, player1.defense);
+                    Console.WriteLine(enemyName + " dealt " + (enemyAttack - player1.defense) + " damage.");
                     Console.Write("> ");
                     Console.ReadKey();
                     turnCount++;
@@ -108,7 +125,7 @@ namespace HelloWorld
                 
             }
             //Return whether or not our player died
-            return _playerHealth != 0;
+            return player1.health != 0;
 
         }
         //Decrements the health of a character. The attack value is subtracted by that character's defense
@@ -132,13 +149,13 @@ namespace HelloWorld
             {
                 scale = 1;
             }
-            _playerHealth += 10 * scale;
-            _playerDamage *= scale;
-            _playerDefense *= scale;
+            player1.health += 10 * scale;
+            player1.damage *= scale;
+            player1.defense *= scale;
         }
 
         //Allows the player to manually improve stats
-        void UpgradeStats(ref int _playerHealth, ref int _playerDamage, ref int _playerDefense)
+        void UpgradeStats(ref int health, ref int damage, ref int defense)
         {
             char input = ' ';
             while (input != '1' && input != '2' && input != '3')
@@ -153,7 +170,7 @@ namespace HelloWorld
                 {
                     case '1':
                         {
-                            _playerHealth += 35;
+                            health += 35;
                             Console.WriteLine("\nYou increased your health by 35 points.");
                             Console.ReadKey();
                             Console.Clear();
@@ -161,7 +178,7 @@ namespace HelloWorld
                         }
                     case '2':
                         {
-                            _playerDamage += 16;
+                            damage += 16;
                             Console.WriteLine("\nYou increased your damage by 16 points.");
                             Console.ReadKey();
                             Console.Clear();
@@ -169,7 +186,7 @@ namespace HelloWorld
                         }
                     case '3':
                         {
-                            _playerDefense += 20;
+                            defense += 20;
                             Console.WriteLine("\nYou increased your defense by 20 points");
                             Console.ReadKey();
                             Console.Clear();
@@ -225,6 +242,14 @@ namespace HelloWorld
             Console.WriteLine("Health: " + health);
             Console.WriteLine("Damage: " + damage);
             Console.WriteLine("Defense: " + defense);
+        }
+
+        void PrintStats(Player player)
+        {
+            Console.WriteLine("\n" + player1.name);
+            Console.WriteLine("Health: " + player1.health);
+            Console.WriteLine("Damage: " + player1.damage);
+            Console.WriteLine("Defense: " + player1.defense);
         }
 
         //This is used to progress through our game. A recursive function meant to switch the rooms and start the battles inside them.
@@ -285,29 +310,29 @@ namespace HelloWorld
                 {
                     case '1':
                         {
-                            _playerName = "Sir Kibble";
-                            _playerHealth = 120;
-                            _playerDefense = 10;
-                            _playerDamage = 20;
+                            player1.name = "Sir Kibble";
+                            player1.health = 120;
+                            player1.defense = 10;
+                            player1.damage = 20;
                             break;
                         }
                     case '2':
                         {
-                            _playerName = "Gnojoel";
-                            _playerHealth = 40;
-                            _playerDefense = 2;
-                            _playerDamage = 70;
+                            player1.name = "Gnojoel";
+                            player1.health = 40;
+                            player1.defense = 2;
+                            player1.damage = 70;
                             break;
                         }
                     case '3':
                         {
-                            _playerName = "Joedazz";
-                            _playerHealth = 200;
-                            _playerDefense = 5;
-                            _playerDamage = 25;
+                            player1.name = "Joedazz";
+                            player1.health = 200;
+                            player1.defense = 5;
+                            player1.damage = 25;
                             break;
                         }
-                        //If an invalid input is selected display and input message and input over again.
+                    //If an invalid input is selected display and input message and input over again.
                     default:
                         {
                             Console.WriteLine("Invalid input. Press any key to continue.");
@@ -319,30 +344,151 @@ namespace HelloWorld
                 Console.Clear();
             }
             //Prints the stats of the choosen character to the screen before the game begins to give the player visual feedback
-            PrintStats(_playerName,_playerHealth,_playerDamage,_playerDefense);
+            PrintStats(player1.name, player1.health, player1.damage, player1.defense);
             Console.WriteLine("Press any key to continue.");
             Console.Write("> ");
             Console.ReadKey();
             Console.Clear();
         }
+        //Sets the values of the players
+        void IntializeCharacter()
+        {
+            player1.name = "Player1";
+            player1.defense = 10;
+            player1.health = 100;
+
+            player2.name = "Player 2";
+            player2.defense = 10;
+            player2.health = 100; 
+        }
+
+        //Choose between singleplayer or mutliplayer
+        void GetModeChoice()
+        {
+            char input = ' ';
+            GetInput(out input, "Singleplayer", "Multiplayer", "Select your game type.");
+            if (input == '1')
+            {
+                Console.Clear();
+                SelectCharacter();
+                ClimbLadder(0);
+            }
+            else
+            {
+                Console.Clear();
+                EquipItems();
+                MultiplayerBattle();
+            }
+        }
+
+        //Sets the vaules of items
+        void IntializeItems()
+        {
+            greatSword.name = "GreatSword";
+            greatSword.durability = 10;
+            greatSword.statBoost = 15;
+
+            shortSword.name = "ShortSword";
+            shortSword.durability = 15;
+            shortSword.statBoost = 10;
+        }
+
+        //Allows player to equip the items
+        void EquipItems()
+        {
+            char input = ' ';
+            GetInput(out input, "GreatSword", "ShortSword", "Player 1, choose a weapon.");
+            if (input == '1')
+            {
+                player1.damage = 30;
+            }
+            else
+            {
+                player1.damage = 25;
+            }
+            Console.Clear();
+            GetInput(out input, "GreatSword", "ShortSword", "Player 2, choose a weapon");
+            if (input == '1')
+            {
+                player2.damage = 30;
+            }
+            else
+            {
+                player2.damage = 25;
+            }
+        }
+
+        //Allows multiplayer battle mode
+        void MultiplayerBattle()
+        {
+            while (player1.health > 0 && player2.health > 0)
+            {
+                PrintStats(player1);
+                PrintStats(player2);
+
+                char input;
+                GetInput(out input, "Attack", "Defend", "Player one turn");
+                if(input == '1')
+                {
+                    BlockAttack(ref player2.health, player1.damage, player2.defense);
+                    Console.Clear();
+                    Console.WriteLine("You dealt " + (player1.damage - player2.defense) + " damage.");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else
+                {
+                    BlockAttack(ref player1.health, player2.damage, player1.defense);
+                    Console.WriteLine(player2.name + " dealt " + (player2.damage - player1.defense) + " damage.");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                Console.Clear();
+                if(player2.health <= 0)
+                {
+                    break;
+                }
+                PrintStats(player1);
+                PrintStats(player2);
+
+                GetInput(out input, "Attack", "Defend", "Player two turn");
+                if(input == '1')
+                {
+                    BlockAttack(ref player1.health, player2.damage, player1.defense);
+                    Console.Clear();
+                    Console.WriteLine("You dealt " + (player2.damage - player1.defense) + " damage.");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else
+                {
+                    BlockAttack(ref player2.health, player1.damage, player2.defense);
+                    Console.Clear();
+                    Console.WriteLine(player2.name + " dealt " + (player1.damage - player2.defense) + " damage.");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            }
+            _gameOver = true;
+        }
+
         //Performed once when the game begins
         public void Start()
         {
-            SelectCharacter();
-            UpgradeStats(ref _playerHealth, ref _playerDamage, ref _playerDefense);
+            IntializeCharacter();
         }
 
         //Repeated until the game ends
         public void Update()
         {
-            ClimbLadder(0);   
+            GetModeChoice();  
         }
 
         //Performed once when the game ends
         public void End()
         {
             //If the player died print death message
-            if(_playerHealth <= 0)
+            if(player1.health <= 0)
             {
                 Console.WriteLine("Failure");
                 return;
